@@ -1,122 +1,223 @@
 # 🌊 StreamContext
 
-> Never lose your AI conversation context again.
+**Never lose your AI conversation context again.**
 
-Built by a Kafka engineer. Because conversations are streams — and streams should never be lost.
+> Continue any Claude or ChatGPT conversation in a fresh window — with full, intelligent context automatically transferred.
+
+[![Version](https://img.shields.io/badge/version-2.0.0-blue?style=flat-square&color=00c8ff)](https://github.com/KranthiNallagatla/streamcontext)
+[![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.9+-yellow?style=flat-square)](https://python.org)
+
+---
 
 ## The Problem
 
-Your Claude/ChatGPT chat grows long → browser slows down → you start a new chat → **you lose everything**.
+Your Claude or ChatGPT conversation grows long → **browser slows to a crawl** → you start a new chat → **you lose everything**.
 
-Existing Chrome extensions just dump the raw conversation (slow, huge, ugly). StreamContext uses AI to create **intelligent summaries** that fit perfectly in a new chat window.
+Existing tools just dump the raw conversation history (slow, huge, misses the point). StreamContext uses Claude to generate an **intelligent Context Transfer Document** — capturing decisions, current state, code snippets, next steps — so the new chat picks up exactly where you left off.
+
+---
 
 ## How It Works
 
 ```
 You chat on Claude.ai or ChatGPT
-→ StreamContext captures every message locally
-→ Chat getting slow? Click "⚡ Continue Fresh"
-→ AI generates smart summary (not a raw dump)
-→ New chat opens with perfect context injected
-→ Continue exactly where you left off
-→ Old conversation archived & searchable forever
+  ↓
+StreamContext captures every message locally
+  ↓
+Chat getting slow? Click "⚡ Continue Fresh"
+  ↓  (takes ~15-20 seconds)
+Claude analyzes your entire conversation
+  ↓
+Generates an 8-section Context Transfer Document
+  ↓
+Opens new chat + auto-injects context
+  ↓
+Continue seamlessly — the AI knows everything
 ```
 
-## Demo
+---
 
+## Features
+
+| Feature | Description |
+|---------|-------------|
+| ⚡ **One-click continue** | Click Continue Fresh — context is generated and injected automatically |
+| 🧠 **Deep AI analysis** | Uses Claude Sonnet to intelligently synthesize conversations, not dump them |
+| 🔄 **Auto-inject** | Context is automatically pasted into the new chat — zero manual steps |
+| 📚 **Full archive** | Every conversation saved locally, searchable, with context history |
+| 🔒 **100% local** | Nothing leaves your machine. SQLite database on your Mac. |
+| 🚀 **Auto-start** | Runs as a Mac LaunchAgent — always available, no manual starting |
+| 📊 **Progress tracking** | Real-time progress bar during context generation |
+| ✅ **Works on both** | Claude.ai and ChatGPT supported |
+
+---
+
+## Quick Start
+
+### Prerequisites
+- macOS (tested on macOS 14+)
+- Python 3.9+
+- Chrome browser
+- Anthropic API key ([get one here](https://console.anthropic.com))
+
+### 1. Clone & Setup
+
+```bash
+git clone https://github.com/KranthiNallagatla/streamcontext.git
+cd streamcontext/service
+pip3 install -r requirements.txt
+cp .env.example .env
 ```
-[Long slow chat with 200 messages]
-     ↓ Click "⚡ Continue Fresh"
-[StreamContext analyzes conversation]
-[Generates 500-word intelligent summary]
-[Opens new chat with context injected]
-[You continue seamlessly in fast new chat]
+
+Edit `.env` and add your Anthropic API key:
 ```
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+### 2. Start the Service
+
+```bash
+python3 main.py
+```
+
+Visit **http://localhost:7892** to see the archive.
+
+### 3. Auto-Start on Login (Recommended)
+
+```bash
+chmod +x install-autostart.sh && ./install-autostart.sh
+```
+
+StreamContext will now start automatically every time you log in.
+
+### 4. Install Chrome Extension
+
+1. Open Chrome → `chrome://extensions`
+2. Enable **Developer Mode** (top-right toggle)
+3. Click **Load unpacked**
+4. Select the `extension/` folder
+5. The 🌊 StreamContext icon appears in your toolbar
+
+### 5. Use It!
+
+Go to **claude.ai** or **chatgpt.com**. You'll see the StreamContext bar at the top.
+
+When your chat gets slow → click **⚡ Continue Fresh**.
+
+---
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────┐
-│         Chrome Extension                │
-│  Captures messages from Claude/ChatGPT  │
-│  Adds "⚡ Continue Fresh" toolbar       │
-└──────────────┬──────────────────────────┘
-               │ HTTP (localhost:7892)
-┌──────────────▼──────────────────────────┐
-│         Local Mac Service               │
-│  FastAPI + SQLite                       │
-│  Stores all conversations locally       │
-│  Generates AI summaries via Claude API  │
-│  Serves beautiful archive UI            │
-└─────────────────────────────────────────┘
+┌─────────────────────────────────────────────────┐
+│              Chrome Extension                    │
+│  ┌─────────────────────────────────────────┐    │
+│  │  Toolbar: message count + service status │    │
+│  │  Content script: captures all messages   │    │
+│  │  Auto-inject: pastes context in new chat │    │
+│  └────────────────┬────────────────────────┘    │
+└───────────────────┼─────────────────────────────┘
+                    │ HTTP API (localhost:7892)
+┌───────────────────▼─────────────────────────────┐
+│              Local Mac Service                   │
+│  ┌──────────┐  ┌──────────┐  ┌──────────────┐   │
+│  │ FastAPI  │  │ SQLite   │  │ Anthropic API│   │
+│  │ REST API │  │ Database │  │ Summarization│   │
+│  └──────────┘  └──────────┘  └──────────────┘   │
+│  ┌──────────────────────────────────────────┐   │
+│  │  Archive UI  ·  Settings  ·  Onboarding  │   │
+│  └──────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────┘
 ```
 
-## Quick Start
+---
 
-### Step 1 — Start the local service
+## Context Transfer Document Format
 
-```bash
-cd service
-pip install -r requirements.txt
-cp .env.example .env
-# Edit .env — add your ANTHROPIC_API_KEY
-python main.py
+StreamContext generates an 8-section document:
+
+```
+# 🌊 StreamContext Context Transfer
+
+## 👤 About This User
+## 🎯 Active Task  
+## ✅ Completed This Session
+## 🔧 Current System State
+## 💾 Critical Details
+## 🐛 Issues & Resolutions
+## 💡 Key Decisions Made
+## ⏭️ Immediate Next Steps
+## 🗣️ Last Exchanges (verbatim)
 ```
 
-Service runs at **http://localhost:7892**
+---
 
-### Step 2 — Install Chrome extension
+## API Reference
 
-1. Open Chrome → `chrome://extensions`
-2. Enable **Developer Mode** (top right toggle)
-3. Click **Load unpacked**
-4. Select the `extension/` folder
-5. Done! 🎉
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/health` | GET | Service health + stats |
+| `/conversations` | GET | List all conversations |
+| `/conversations/{id}` | GET | Get conversation + messages |
+| `/conversations/{id}/messages` | POST | Save messages |
+| `/conversations/{id}/summarize` | POST | Generate context |
+| `/conversations/{id}` | DELETE | Delete conversation |
+| `/settings` | GET/POST | Get/update settings |
 
-### Step 3 — Start chatting!
+---
 
-Go to **claude.ai** or **chatgpt.com**.
+## Configuration
 
-You'll see the StreamContext bar at the top of every chat.
+Settings are stored in the local SQLite database and can be updated via the Settings page (`http://localhost:7892/settings`):
 
-When your chat gets slow — click **⚡ Continue Fresh**.
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `model` | `claude-sonnet-4-6` | Claude model for summarization |
+| `max_messages_per_summary` | `80` | Max messages to analyze |
+| `auto_save_interval` | `5` | Save every N messages |
 
-## Features
-
-| Feature | Status |
-|---|---|
-| Auto-capture messages | ✅ |
-| Smart AI summary | ✅ |
-| One-click continue | ✅ |
-| Full conversation archive | ✅ |
-| Beautiful archive UI | ✅ |
-| 100% local & private | ✅ |
-| Works on Claude.ai | ✅ |
-| Works on ChatGPT | ✅ |
-| Runs 24/7 on Mac mini | ✅ |
-| Firefox support | 🔜 |
-| Semantic search | 🔜 |
-
-## Why "StreamContext"?
-
-Built by a Kafka engineer. Conversations are **event streams** — every message is an event. StreamContext is the consumer that persists your stream and lets you continue from any point.
-
-Just like Kafka never loses events, StreamContext never loses your conversations.
+---
 
 ## Privacy
 
-- ✅ 100% local — nothing leaves your machine
-- ✅ SQLite database stored in `~/.streamcontext/`  
-- ✅ No accounts, no cloud, no tracking
-- ✅ Your API key stays in your `.env` file
+- ✅ Everything stays on your Mac
+- ✅ SQLite database at `~/.streamcontext/conversations.db`
+- ✅ No accounts, no cloud sync, no telemetry
+- ✅ API key stored in local `.env` file only
+- ✅ Chrome extension only reads pages you're chatting on
 
-## Tech Stack
+---
 
-- **Chrome Extension** — Vanilla JS, Manifest V3
-- **Local Service** — Python FastAPI + SQLite
-- **AI Summarization** — Claude Haiku (fast & cheap)
-- **Archive UI** — Clean dark terminal aesthetic
+## Why "StreamContext"?
+
+Built by a Kafka engineer. Every AI conversation is an **event stream** — each message is an event. StreamContext is the consumer that persists your stream, letting you resume from any point.
+
+Just like Kafka never loses events, StreamContext never loses your conversations.
+
+---
+
+## Roadmap
+
+- [ ] Firefox extension
+- [ ] Semantic search across all conversations
+- [ ] Automatic context injection without clipboard
+- [ ] Multi-device sync (optional, encrypted)
+- [ ] Support for more platforms (Gemini, Perplexity, etc.)
+- [ ] Chrome Web Store submission
+
+---
+
+## Contributing
+
+PRs welcome! See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+---
 
 ## License
 
 MIT — built for the community 🌊
+
+---
+
+*Built with ❤️ by [@KranthiNallagatla](https://github.com/KranthiNallagatla)*
