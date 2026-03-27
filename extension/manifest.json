@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "StreamContext",
+  "version": "1.0.0",
+  "description": "Never lose your AI conversation context again. Continue any Claude or ChatGPT conversation in a fresh chat — instantly.",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://claude.ai/*",
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*",
+    "http://localhost:7892/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://claude.ai/*", "https://chatgpt.com/*", "https://chat.openai.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "StreamContext"
+  }
+}

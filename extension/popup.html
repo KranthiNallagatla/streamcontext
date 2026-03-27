@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 320px;
+      background: #0a0a1a;
+      color: #e8e8f0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+    }
+    .header {
+      padding: 16px;
+      background: linear-gradient(135deg, #111128, #0a0a1a);
+      border-bottom: 1px solid rgba(0,200,255,0.15);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo { font-size: 20px; filter: drop-shadow(0 0 8px #00c8ff); }
+    .title { font-size: 14px; font-weight: 700; color: #00c8ff; }
+    .subtitle { font-size: 9px; color: #555; letter-spacing: 1px; text-transform: uppercase; }
+    .section { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .label { font-size: 9px; color: #555; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+    .status-row { display: flex; align-items: center; gap: 6px; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; }
+    .dot-green { background: #00d4aa; box-shadow: 0 0 6px #00d4aa; }
+    .dot-red { background: #ff4757; }
+    .btn {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      font-family: monospace;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: linear-gradient(135deg, #00c8ff, #0080ff); color: #000; }
+    .btn-secondary { background: rgba(255,255,255,0.06); color: #888; border: 1px solid rgba(255,255,255,0.1); }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .stat-box { background: rgba(255,255,255,0.04); border-radius: 6px; padding: 8px; text-align: center; }
+    .stat-num { font-size: 18px; font-weight: 700; color: #00c8ff; }
+    .stat-label { font-size: 9px; color: #555; margin-top: 2px; }
+    .footer { padding: 8px 16px; font-size: 9px; color: #333; text-align: center; }
+    a { color: #00c8ff; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="logo">🌊</span>
+    <div>
+      <div class="title">StreamContext</div>
+      <div class="subtitle">Never lose context</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="label">Service Status</div>
+    <div class="status-row">
+      <div class="dot" id="service-dot"></div>
+      <span id="service-status">Checking...</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="label">Stats</div>
+    <div class="stats">
+      <div class="stat-box">
+        <div class="stat-num" id="conv-count">-</div>
+        <div class="stat-label">Conversations</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="msg-count">-</div>
+        <div class="stat-label">Messages Saved</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <button class="btn btn-primary" id="open-archive">📚 Open Archive</button>
+    <button class="btn btn-secondary" id="open-settings">⚙️ Settings</button>
+  </div>
+
+  <div class="footer">
+    <a href="https://github.com/KranthiNallagatla/streamcontext" target="_blank">GitHub</a>
+    · v1.0.0
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
